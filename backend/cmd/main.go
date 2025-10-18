@@ -1,19 +1,32 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"takeaway-go/config"
+	"takeaway-go/pkg/database"
+	"takeaway-go/pkg/redis"
+	"takeaway-go/router"
+)
 
 func main() {
+	// 初始化配置文件
+	config.Init()
+
+	// 初始化数据库
+	database.InitDB()
+	// 初始化 Redis
+	redis.InitRedis()
+
+	// 初始化 *gin.Engine
+	gin.SetMode(config.AppConf.Server.Mode)
 	r := gin.Default()
+	// 注册路由
+	router.InitRouter(r)
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-
-	// 启动服务，默认监听在 :8080 端口
-	err := r.Run(":8082")
-	if err != nil {
-		return
+	// 启动服务
+	port := fmt.Sprintf(":%d", config.AppConf.Server.Port)
+	if err := r.Run(port); err != nil {
+		panic(fmt.Sprintf("Failed to start server: %v", err))
 	}
 }
