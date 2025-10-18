@@ -51,7 +51,7 @@ func Init() {
 	config.SetConfigType("yaml")
 
 	// 读取配置文件
-	if err := viper.ReadInConfig(); err != nil {
+	if err := config.ReadInConfig(); err != nil {
 		panic(fmt.Errorf("fatal error config file: %w", err))
 	}
 
