@@ -1,0 +1,21 @@
+server:
+  port: 8082
+  # mode: debug | release | test
+  mode: debug
+
+mysql:
+  host: 127.0.0.1
+  # Docker 中 MySQL 的 3306 端口映射到 WSL2 的 3307 端口 (../docker-compose.yaml)
+  port: 3307
+  user: takeaway
+  password: takeaway123456
+  db_name: sky_take_out
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+  db: 0
+
+jwt:
+  secret: "takeaway-secret-key-2025"
