@@ -5,21 +5,22 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	gormlogger "gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"log"
-	"takeaway-go/config"
+	"takeaway-go/internal/app/config"
+	"takeaway-go/pkg/logger"
 )
 
 var DB *gorm.DB
 
 func InitDB() {
-	// 设置 GORM 日志级别
-	var ormLogger logger.Interface
+	// 基于 zap 实现 gorm 日志接口 logger.Interface
+	ormLogger := logger.NewGormZapLogger(logger.Log)
+	// 根据环境设置 GORM 的日志级别
 	if gin.Mode() == "debug" {
-		ormLogger = logger.Default.LogMode(logger.Info)
+		ormLogger.LogLevel = gormlogger.Info
 	} else {
-		ormLogger = logger.Default
+		ormLogger.LogLevel = gormlogger.Warn
 	}
 
 	// 构建 DSN 字符串
@@ -46,5 +47,5 @@ func InitDB() {
 		panic(fmt.Sprintf("Failed to connect to database: %v", err))
 	}
 
-	log.Println("MySQL database connected successfully")
+	logger.Log.Info("MySQL database connected successfully")
 }

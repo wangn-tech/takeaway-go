@@ -18,4 +18,18 @@ redis:
   db: 0
 
 jwt:
-  secret: "takeaway-secret-key-2025"
+  admin:
+    secret: takeaway_admin_secret
+    # 前端传递的 token 在请求头中对应的 key
+    name: Token
+  user:
+    secret: takeaway_user_secret
+    # 前端传递的 token 在请求头中对应的 key
+    name: Authorization
+
+# 日志配置
+log:
+  level: "debug"      # 日志级别: debug, info, warn, error
+  format: "console"   # 输出格式: console (开发), json (生产)
+  show-line: true     # 是否显示文件名和行号
+  stacktrace: true    # 在 error 级别日志中是否包含堆栈信息

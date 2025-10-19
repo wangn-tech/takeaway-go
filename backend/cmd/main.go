@@ -3,15 +3,19 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"takeaway-go/config"
-	"takeaway-go/pkg/database"
-	"takeaway-go/pkg/redis"
-	"takeaway-go/router"
+	"takeaway-go/internal/app/config"
+	"takeaway-go/internal/app/initializer/database"
+	"takeaway-go/internal/app/initializer/redis"
+	"takeaway-go/internal/router"
+	"takeaway-go/pkg/logger"
 )
 
 func main() {
 	// 初始化配置文件
 	config.Init()
+
+	// 初始化 Logger
+	logger.InitLogger()
 
 	// 初始化数据库
 	database.InitDB()
@@ -26,6 +30,7 @@ func main() {
 
 	// 启动服务
 	port := fmt.Sprintf(":%d", config.AppConf.Server.Port)
+	logger.Log.Info("Server starting on port " + port)
 	if err := r.Run(port); err != nil {
 		panic(fmt.Sprintf("Failed to start server: %v", err))
 	}
