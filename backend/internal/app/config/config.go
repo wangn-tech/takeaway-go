@@ -10,10 +10,13 @@ import (
 // AppConf 是全局配置变量
 var AppConf *Config
 
+// Config 是应用程序的主配置结构体
 type Config struct {
 	Server ServerConfig   `mapstructure:"server"`
 	MySQL  DatabaseConfig `mapstructure:"mysql"`
 	Redis  RedisConfig    `mapstructure:"redis"`
+	JWT    JWTConfig      `mapstructure:"jwt"`
+	Log    LogConfig      `mapstructure:"log"`
 }
 
 // ServerConfig 后端服务配置
@@ -39,6 +42,27 @@ type RedisConfig struct {
 	DB       int    `mapstructure:"db"`
 }
 
+// JWTConfig JWT 配置
+type JWTConfig struct {
+	Admin JWTOption `mapstructure:"admin"`
+	User  JWTOption `mapstructure:"user"`
+}
+
+// JWTOption JWT 选项
+type JWTOption struct {
+	Secret string `mapstructure:"secret"`
+	Name   string `mapstructure:"name"`
+}
+
+// LogConfig 定义了日志的配置参数
+type LogConfig struct {
+	Level      string `mapstructure:"level"`      // 日志级别, 例如: debug, info, warn, error
+	Format     string `mapstructure:"format"`     // 日志格式, 例如: console, json
+	ShowLine   bool   `mapstructure:"show-line"`  // 是否显示行号
+	Stacktrace bool   `mapstructure:"stacktrace"` // 是否开启堆栈跟踪
+}
+
+// Init 读取解析配置文件
 func Init() {
 	// 解析命令行参数 “env”, 默认为 "dev"
 	env := pflag.String("env", "dev", "Specify the environment config to use: [dev, prod, test]")

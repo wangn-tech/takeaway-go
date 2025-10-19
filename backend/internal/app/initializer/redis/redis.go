@@ -4,25 +4,25 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
-	"log"
-	"takeaway-go/config"
+	"takeaway-go/internal/app/config"
+	"takeaway-go/pkg/logger"
 )
 
-var Redis *redis.Client
+var RedisClient *redis.Client
 
 // InitRedis 初始化 Redis 连接
 func InitRedis() {
 	conf := config.AppConf.Redis
-	Redis = redis.NewClient(&redis.Options{
+	RedisClient = redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", conf.Host, conf.Port),
 		Password: conf.Password,
 		DB:       conf.DB,
 	})
 
-	_, err := Redis.Ping(context.Background()).Result()
+	_, err := RedisClient.Ping(context.Background()).Result()
 	if err != nil {
 		panic(fmt.Sprintf("Failed to connect to Redis: %v", err))
 	}
 
-	log.Println("Redis connected successfully")
+	logger.Log.Info("Redis connected successfully")
 }
