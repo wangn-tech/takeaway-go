@@ -1,9 +1,10 @@
 package model
 
 import (
-	"gorm.io/gorm"
 	"takeaway-go/common/enum"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Employee struct {
@@ -19,6 +20,11 @@ type Employee struct {
 	UpdateTime time.Time `json:"updateTime"`
 	CreateUser uint64    `json:"createUser"`
 	UpdateUser uint64    `json:"updateUser"`
+}
+
+// TableName 指定表名
+func (Employee) TableName() string {
+	return "employee"
 }
 
 func (e *Employee) BeforeCreate(tx *gorm.DB) error {

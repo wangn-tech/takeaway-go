@@ -1,9 +1,10 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"takeaway-go/internal/api/handler"
 	"takeaway-go/internal/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
 // InitRouter 初始化并注册所有路由
@@ -14,6 +15,11 @@ func InitRouter(r *gin.Engine) {
 			"message": "pong",
 		})
 	})
+
+	// 初始化依赖
+	// employeeRepo := repository.NewEmployeeRepository(database.DB)
+	// employeeService := service.NewEmployeeService(employeeRepo)
+	// employeeHandler := handler.NewEmployeeHandler(employeeService)
 
 	employeeHandler := handler.NewEmployeeHandler()
 
@@ -27,8 +33,16 @@ func InitRouter(r *gin.Engine) {
 			adminRouter.POST("/employee/logout", employeeHandler.Logout)
 			// 新增员工
 			adminRouter.POST("/employee", employeeHandler.AddEmployee)
+			// 修改员工状态
+			adminRouter.POST("/employee/status/:status", employeeHandler.UpdateStatus)
+			// 修改密码
+			adminRouter.PUT("/employee/editPassword", employeeHandler.EditPassword)
+			// 更改用户信息
+			adminRouter.PUT("/employee", employeeHandler.UpdateEmployee)
 			// 员工分页查询
 			adminRouter.GET("/employee/page", employeeHandler.PageQuery)
+			// 根据ID获取员工信息
+			adminRouter.GET("/employee/:id", employeeHandler.GetByID)
 		}
 	}
 }
