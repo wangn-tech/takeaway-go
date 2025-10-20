@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"net/http"
 	"strings"
 	"takeaway-go/common/enum"
@@ -10,6 +8,9 @@ import (
 	"takeaway-go/internal/app/config"
 	"takeaway-go/internal/utils"
 	"takeaway-go/pkg/logger"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // JWTAuth 创建一个 JWT 认证中间件
@@ -40,11 +41,17 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
+		valid := utils.IsTokenValidInRedis(claims.UserID, authHeader, "access_token")
+		if !valid {
+			logger.Log.Warn("JWTAuth: token 已失效或被撤销",
+				zap.Uint64("userID", claims.UserID),
+				zap.Error(err))
+			result.Fail(c, http.StatusUnauthorized, "token已失效，请重新登录")
+			c.Abort()
+			return
+		}
 		// 将当前请求的 claims 信息保存到请求的上下文 c 上
-		// 后续的处理函数可以用c.Get("claims")来获取当前请求的用户信息
-		c.Set("claims", claims)
-		c.Set(enum.CurrentId, claims.ID)
+		c.Set(enum.CurrentId, claims.UserID)
 		c.Set(enum.CurrentName, claims.GrantScope)
 		c.Next()
 	}
