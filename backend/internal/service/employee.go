@@ -8,7 +8,6 @@ import (
 	"takeaway-go/internal/api/request"
 	"takeaway-go/internal/api/response"
 	"takeaway-go/internal/app/config"
-	"takeaway-go/internal/app/initializer/database"
 	"takeaway-go/internal/model"
 	"takeaway-go/internal/repository"
 	"takeaway-go/internal/utils"
@@ -35,11 +34,11 @@ type EmployeeService struct {
 	repo *repository.EmployeeDao
 }
 
-func NewEmployeeService() *EmployeeService {
-	return &EmployeeService{
-		repo: repository.NewEmployeeDao(database.DB),
-	}
-	// return &EmployeeService{repo: repo}
+func NewEmployeeService(repo *repository.EmployeeDao) IEmployeeService {
+	// return &EmployeeService{
+	// 	repo: repository.NewEmployeeDao(database.DB),
+	// }
+	return &EmployeeService{repo: repo}
 }
 
 const DefaultPassword = "123456" // 定义默认密码

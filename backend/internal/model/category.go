@@ -7,14 +7,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type Employee struct {
+type Category struct {
 	ID         uint64    `json:"id" gorm:"primaryKey"`
+	Type       int       `json:"type"`
 	Name       string    `json:"name"`
-	Username   string    `json:"username" gorm:"unique"`
-	Password   string    `json:"password"`
-	Phone      string    `json:"phone"`
-	Sex        string    `json:"sex"`
-	IdNumber   string    `json:"idNumber"`
+	Sort       int       `json:"sort"`
 	Status     int       `json:"status" gorm:"default:1"`
 	CreateTime time.Time `json:"createTime"`
 	UpdateTime time.Time `json:"updateTime"`
@@ -23,40 +20,32 @@ type Employee struct {
 }
 
 // TableName 指定表名
-func (Employee) TableName() string {
-	return "employee"
+func (Category) TableName() string {
+	return "category"
 }
 
 // BeforeCreate 在创建记录前自动填充字段
-func (e *Employee) BeforeCreate(tx *gorm.DB) error {
+func (c *Category) BeforeCreate(tx *gorm.DB) error {
 	// 自动填充 创建时间、创建人、更新时间、更新用户
-	e.CreateTime = time.Now()
-	e.UpdateTime = time.Now()
+	c.CreateTime = time.Now()
+	c.UpdateTime = time.Now()
 	// 从上下文获取用户信息
 	value := tx.Statement.Context.Value(enum.CurrentId)
 	if uid, ok := value.(uint64); ok {
-		e.CreateUser = uid
-		e.UpdateUser = uid
+		c.CreateUser = uid
+		c.UpdateUser = uid
 	}
 	return nil
 }
 
 // BeforeUpdate 在更新记录前自动填充字段
-func (e *Employee) BeforeUpdate(tx *gorm.DB) error {
+func (c *Category) BeforeUpdate(tx *gorm.DB) error {
 	// 在更新记录时自动填充更新时间
-	e.UpdateTime = time.Now()
+	c.UpdateTime = time.Now()
 	// 从上下文获取用户信息
 	value := tx.Statement.Context.Value(enum.CurrentId)
 	if uid, ok := value.(uint64); ok {
-		e.UpdateUser = uid
+		c.UpdateUser = uid
 	}
-	return nil
-}
-
-// AfterFind 在查询记录后格式化日期字段
-func (e *Employee) AfterFind(tx *gorm.DB) error {
-	// 格式化当前日期
-	//e.CreateTime.Format(time.DateOnly)
-	//e.CreateTime.Format(time.DateTime)
 	return nil
 }
