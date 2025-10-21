@@ -14,14 +14,15 @@ import (
 )
 
 type EmployeeHandler struct {
-	service *service.EmployeeService
+	// service *service.EmployeeService
+	service service.IEmployeeService
 }
 
-func NewEmployeeHandler() *EmployeeHandler {
-	return &EmployeeHandler{
-		service: service.NewEmployeeService(),
-	}
-	// return &EmployeeHandler{service: service}
+func NewEmployeeHandler(service service.IEmployeeService) *EmployeeHandler {
+	// return &EmployeeHandler{
+	// 	service: service.NewEmployeeService(),
+	// }
+	return &EmployeeHandler{service: service}
 }
 
 // Login 处理员工登录请求

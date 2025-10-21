@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"takeaway-go/internal/app/config"
 	"takeaway-go/internal/app/initializer/database"
 	"takeaway-go/internal/app/initializer/redis"
 	"takeaway-go/internal/router"
 	"takeaway-go/pkg/logger"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
